@@ -12,15 +12,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://code.mycard.moe/3rdeye/onedice.git"
+    "url": "https://https://github.com/koishijs/onedice.git"
   },
   "author": "Nanahira <nanahira@momobako.com>",
   "license": "MIT",
   "keywords": [],
   "bugs": {
-    "url": "https://code.mycard.moe/3rdeye/onedice/issues"
+    "url": "https://https://github.com/koishijs/onedice/issues"
   },
-  "homepage": "https://code.mycard.moe/3rdeye/onedice",
+  "homepage": "https://https://github.com/koishijs/onedice",
   "jest": {
     "moduleFileExtensions": [
       "js",
