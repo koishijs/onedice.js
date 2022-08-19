@@ -58,6 +58,7 @@ export interface OneDiceConfig {
   maxDiceCount?: number;
   maxDiceFaces?: number;
   valueDict?: { [key: string]: number };
+  defaultDiceFaces?: number;
 }
 
 export class OneDice {
@@ -235,7 +236,7 @@ export class OneDice {
       6,
       (count, [, faces], [kq, select], [pb, pbCount], [pool, min]) => {
         count ??= 1;
-        faces ??= 6;
+        faces ??= this.config.defaultDiceFaces || 6;
         this.checkDiceCount(count);
         this.checkDiceFaces(faces);
         let results: number[];
