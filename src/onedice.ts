@@ -59,11 +59,17 @@ export interface OneDiceConfig {
   maxDiceFaces?: number;
   valueDict?: { [key: string]: number };
   defaultDiceFaces?: number;
+  random?: () => number;
 }
 
 export class OneDice {
-  random(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+  random() {
+    // can be extended
+    return this.config.random ? this.config.random() : Math.random();
+  }
+
+  randomInt(min: number, max: number): number {
+    return Math.floor(this.random() * (max - min + 1)) + min;
   }
 
   private splitThrow(
@@ -73,8 +79,8 @@ export class OneDice {
     if (count == null) {
       throw new Error('Count is required in pb.');
     }
-    const first = this.random(0, 9);
-    const tens = range(count + 1).map(() => this.random(0, 9));
+    const first = this.randomInt(0, 9);
+    const tens = range(count + 1).map(() => this.randomInt(0, 9));
     const tenFun = (ten: number) => (first === 0 && ten === 0 ? 10 : ten);
     const pickTen = picker(tens, tenFun);
     const combined = first + 10 * pickTen;
@@ -250,7 +256,7 @@ export class OneDice {
             this.pbThrow(pbCount, pb === '\x01' ? 'p' : 'b'),
           );
         } else {
-          results = range(count).map(() => this.random(1, faces));
+          results = range(count).map(() => this.randomInt(1, faces));
         }
         if (pool && min) {
           return results.filter((r) => r >= min).length;
@@ -283,7 +289,7 @@ export class OneDice {
         let totalResults: number[] = [];
         let nextCount = count;
         while (nextCount) {
-          const results = range(nextCount).map(() => this.random(1, faces));
+          const results = range(nextCount).map(() => this.randomInt(1, faces));
           totalResults = totalResults.concat(results);
           nextCount = results.filter((r) => r >= addLine).length;
         }
@@ -301,7 +307,7 @@ export class OneDice {
       const totalResults: number[][] = [];
       let nextCount = count;
       while (nextCount) {
-        const results = range(nextCount).map(() => this.random(1, faces));
+        const results = range(nextCount).map(() => this.randomInt(1, faces));
         totalResults.push(results);
         nextCount = results.filter((r) => r >= addLine).length;
       }
@@ -312,7 +318,7 @@ export class OneDice {
       if (count < 1) {
         throw new Error(`Invalid count: ${count}`);
       }
-      return sum(range(count).map(() => this.random(-1, 1)));
+      return sum(range(count).map(() => this.randomInt(-1, 1)));
     }),
   ];
 
@@ -444,7 +450,7 @@ export class OneDice {
     const firstValue = numberStack.pop();
     operatorMiniStack.reverse();
     numberMiniStack.reverse();
-    // console.log('calculate', firstValue, numberMiniStack, operatorMiniStack);
+    // console.log('eval', firstValue, numberMiniStack, operatorMiniStack);
     const operator = this.operatorMap.get(operatorMiniStack[0]);
     const calculated = operator.doCalculation(
       firstValue,
@@ -455,7 +461,7 @@ export class OneDice {
     numberStack.push(calculated);
   }
 
-  calculate(expr: string) {
+  eval(expr: string) {
     const chain = this.parseChain(expr);
     const numberStack: number[] = [];
     const operatorStack: string[] = [];
@@ -489,5 +495,10 @@ export class OneDice {
       this.handleCalculation(numberStack, operatorStack);
     }
     return numberStack[0];
+  }
+
+  // @deprecated
+  calculate(expr: string) {
+    return this.eval(expr);
   }
 }
