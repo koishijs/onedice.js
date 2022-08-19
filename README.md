@@ -23,9 +23,11 @@ class MyOneDice extends OneDice {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 }
+```
 
 ### Extend operator
 
+```
 const onedice = new OneDice()
 onedice.addOperator(new Operator('+', 1, (a, [o, b]) => a + b))
 ```
