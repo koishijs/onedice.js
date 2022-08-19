@@ -27,7 +27,7 @@ class MyOneDice extends OneDice {
 
 ### Extend operator
 
-```
+```ts
 const onedice = new OneDice()
 onedice.addOperator(new Operator('+', 1, (a, [o, b]) => a + b))
 ```
